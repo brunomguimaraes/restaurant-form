@@ -7,6 +7,9 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import { StepOne, Meal } from '../Form/StepOne';
+// import { StepTwo } from '../Form/StepTwo';
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '90%',
@@ -24,24 +27,33 @@ function getSteps() {
   return ['Step 1', 'Step 2', 'Step 3', 'Preview'];
 }
 
-function getStepContent(stepIndex: number) {
-  switch (stepIndex) {
-    case 0:
-      return 'Select campaign settings...';
-    case 1:
-      return 'What is an ad group anyways?';
-    case 2:
-      return 'This is the bit I really care about!';
-    default:
-      return 'Unknown stepIndex';
-  }
+export interface IReserve {
+  mealType: Meal | '';
+  quantityOfPeople: number;
+  restaurant: string[];
+  dishes: IDishes[];
+}
+
+export interface IDishes {
+  name: string;
+  quantity: number;
+}
+
+const emptyReserve: IReserve ={
+  mealType: '',
+  quantityOfPeople: 0,
+  restaurant: [],
+  dishes: []
 }
 
 const MainComp = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [reserve, setReserve] = React.useState<IReserve>(emptyReserve)
   const steps = getSteps();
 
+  React.useEffect(() => {console.log("reserve:", reserve)}, [reserve])
+  
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
@@ -53,6 +65,15 @@ const MainComp = () => {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+ const handleReserveChange = (field: any, value: any) => {
+    // return (e: any) => {
+      setReserve({
+        ...reserve,
+        [field]: value
+      });
+    // };
+  }
 
   return (
     <div className={classes.root}>
@@ -71,8 +92,12 @@ const MainComp = () => {
           </div>
         ) : (
           <div>
-            <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-            <div>
+              {activeStep === 0 && <StepOne reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
+              {/* {activeStep === 1 && <StepTwo />} */}
+              {activeStep === 1 && <div />}
+              {activeStep === 2 && <div />}
+              {activeStep === 3 && <div />}
+          <div>
               <Button
                 disabled={activeStep === 0}
                 onClick={handleBack}
