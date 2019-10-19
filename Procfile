@@ -1,0 +1,1 @@
+web:yarn && yarn relay && yarn build && yarn start
