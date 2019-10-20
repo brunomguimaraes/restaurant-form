@@ -3,7 +3,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 
 interface IProps {
     options: any[];
-		changeReserveHandler: (field: any, value: any) => void;
+		changeReserveHandler: (field: any, value: any, _?: any) => void;
 		stateRef: any;
     value: any;
     selectById?: boolean

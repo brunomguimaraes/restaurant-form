@@ -19,22 +19,23 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
   error: boolean;
-  changeReserveHandler: (field: any, value: any) => void;
+  changeReserveHandler: (field: any, value: any, id?: any) => void;
   stateRef: string;
   value: any;
+  id?: any;
 }
 
-const NumberInputComp = ({ error, changeReserveHandler, stateRef, value }: IProps) => {
+const NumberInputComp = ({ error, changeReserveHandler, stateRef, value, id }: IProps) => {
   const classes = useStyles();
   const handleChange = (name: string) => (
     event: React.ChangeEvent<{ value: unknown }>,) => {
-			changeReserveHandler(name, event.target.value)
+			changeReserveHandler(name, event.target.value, id)
   };
 
   return (
       <TextField
         error={error}
-        id="standard-number"
+        id={id ? id : "standard-number"}
         value={value}
         onChange={handleChange(stateRef)}
         type="number"

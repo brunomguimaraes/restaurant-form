@@ -2,8 +2,10 @@ import React from 'react';
 import * as api from '../../../data/dishes.json'
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
 import { FormHelperText } from '@material-ui/core';
+import FormControl from '@material-ui/core/FormControl';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 
 import { IReserve, IError } from '../../Main';
 
@@ -36,12 +38,15 @@ const useStyles = makeStyles((theme: Theme) =>
 			justifyItems: 'start',
 			alignItems: 'start',
 			gridColumnGap: theme.spacing(4)
-		}
+		},
+		fab: {
+      marginTop: theme.spacing(2),
+    },
   }),
 );
 
 interface IProps {
-  changeReserveHandler: (field: any, value: any) => void;
+  addNewDish: (dish: any) => void;
   reserveValues: IReserve;
   error: IError;
 }
@@ -52,27 +57,36 @@ const emptyDish = {
     id: 0
   }
 
-const StepThreeComp = ({ changeReserveHandler, reserveValues, error }: IProps) => {
+const StepThreeComp = ({ addNewDish, reserveValues, error }: IProps) => {
     const classes = useStyles();
 
-    const [dish, setDish] = React.useState(emptyDish);
-
-    React.useEffect(() => {
-        console.log("dish:", dish)
-    }, [dish])
-
-    const handleDishChange = (field: any, value: any) => {
-        const dishQuery = api.dishes.find(dish => dish.id === parseInt(value))
-        setDish({
-          ...dish,
-          [field]: value,
-          'name': dishQuery!.name
-          });
+    const handleDishChange = (name: any, value: any, id: any) => {
+			console.log('name: ', name)
+			console.log('value: ', value)
+			if (name === 'id') {
+				const dishQuery = searchDishById(value) 
+				console.log('selectedDish', dishQuery)
+				addNewDish({
+					name: dishQuery!.name,
+					id: dishQuery!.id,
+					quantity: 1
+				})
+			} else if (name === 'quantity') {
+				const dishQuery = searchDishById(id) 
+				console.log('selectedDish', dishQuery)
+				console.log('iD QUANTI', id)
+			}
+        // setDish({
+        //   ...dish,
+        //   [field]: value,
+        //   'name': dishQuery!.name
+				// 	});
+					// addNewDish(dishQuery)
         }
 
-    // const searchDishById = (id: any) => {
-    //     return api.dishes.find(dish => dish.id === id)
-    // }
+    const searchDishById = (id: any) => {
+        return api.dishes.find(dish => dish.id === parseInt(id))
+    }
 
   return (
     <div className={classes.stepOneContainer}>
@@ -81,10 +95,10 @@ const StepThreeComp = ({ changeReserveHandler, reserveValues, error }: IProps) =
         <label className={classes.selectLabel}>Please select a dish: </label>
         <label className={classes.selectLabel}>Please enter no of servings: </label>
         {reserveValues.dishes.map((dish) =>
-					<>	
+					<React.Fragment key={dish.id+` Key`}>	
 						<Select
 							key={dish.id}
-							value={dish.name}
+							value={dish.id}
 							stateRef={'id'}
 							options={
 									api.dishes.filter(
@@ -105,25 +119,14 @@ const StepThreeComp = ({ changeReserveHandler, reserveValues, error }: IProps) =
 							stateRef={'quantity'}
 							changeReserveHandler={handleDishChange}
 						/>
-					</>
+					</React.Fragment>
 					
 				)}
 				</div>
-        {/* {reserveValues.dishes && reserveValues.dishes.map(
-            (dish) =>
-                <div key={`dishContainer` + dish.id}>
-                    <div key={dish.id}>
-                        {dish.name} | {dish.quantity}
-                    </div>
-                </div>)
-        } */}
-          {/* <Select
-            value={reserveValues.mealType}
-            stateRef={'mealType'}
-            options={mealTypes}
-            changeReserveHandler={changeReserveHandler}
-          /> */}
-          {error.dishes && <FormHelperText>{error.dishes}</FormHelperText>}
+				{error.dishes && <FormHelperText>{error.dishes}</FormHelperText>}
+				<Fab onClick={() => addNewDish(emptyDish)} color="primary" aria-label="add" className={classes.fab}>
+        	<AddIcon />
+      	</Fab>
       </FormControl>
     </div>
   );

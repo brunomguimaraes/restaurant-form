@@ -56,11 +56,7 @@ const emptyReserve: IReserve = {
   mealType: '',
   quantityOfPeople: 1,
   restaurant: '',
-  dishes: [{
-    name: '',
-    quantity: 1,
-    id: 0
-  }]
+  dishes: []
 }
 
 const emptyError = {
@@ -78,6 +74,7 @@ const MainComp = () => {
   const steps = getSteps();
 
   React.useEffect(() => {console.log("reserve:", reserve)}, [reserve])
+
   
   const handleValidation = () => {
       setError(validate(reserve, activeStep))
@@ -105,6 +102,20 @@ const MainComp = () => {
       });
   }
 
+  const addNewDish = (newDish: IDishes) => {
+    let dishesToBeAdded: IDishes[] = reserve.dishes
+    if (newDish.id !== 0) {
+      dishesToBeAdded.push(newDish)
+      dishesToBeAdded = dishesToBeAdded.filter(e =>  e.id !== 0)
+    } else {
+      if (dishesToBeAdded.some(dish => dish.id === 0)) {
+        console.log('Error!')
+      } else {
+        dishesToBeAdded.push(newDish)
+      }
+    }
+    setReserve({ ...reserve, 'dishes': dishesToBeAdded})
+  }
 
   return (
     <div className={classes.root}>
@@ -125,7 +136,7 @@ const MainComp = () => {
           <div>
               {activeStep === 0 && <StepOne error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
               {activeStep === 1 && <StepTwo error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
-              {activeStep === 2 && <StepThree error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
+              {activeStep === 2 && <StepThree error={error} addNewDish={addNewDish} reserveValues={reserve} />}
               {activeStep === 3 && <div />}
           <div>
               <Button
