@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import { StepOne, Meal } from '../Form/StepOne';
-// import { StepTwo } from '../Form/StepTwo';
+import { StepTwo } from '../Form/StepTwo';
 
 import validate from '../../utils/validation'
 
@@ -32,7 +32,7 @@ function getSteps() {
 export interface IReserve {
   mealType: Meal | '';
   quantityOfPeople: number;
-  restaurant: string[];
+  restaurant: string;
   dishes: IDishes[];
 }
 
@@ -42,14 +42,15 @@ export interface IDishes {
 }
 
 export interface IError {
-  mealType: string;
-  quantityOfPeople: string;
+  mealType?: string;
+  quantityOfPeople?: string;
+  restaurant?: string;
 }
 
 const emptyReserve: IReserve = {
   mealType: '',
   quantityOfPeople: 0,
-  restaurant: [],
+  restaurant: '',
   dishes: []
 }
 
@@ -69,9 +70,9 @@ const MainComp = () => {
   React.useEffect(() => {console.log("reserve:", reserve)}, [reserve])
   
   const handleValidation = () => {
-      setError(validate(reserve))
-      if(Object.entries(validate(reserve)).length === 0 &&
-       validate(reserve).constructor === Object) {
+      setError(validate(reserve, activeStep))
+      if(Object.entries(validate(reserve, activeStep)).length === 0 &&
+       validate(reserve, activeStep).constructor === Object) {
         handleNext();
       }
   };
@@ -112,8 +113,7 @@ const MainComp = () => {
         ) : (
           <div>
               {activeStep === 0 && <StepOne error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
-              {/* {activeStep === 1 && <StepTwo />} */}
-              {activeStep === 1 && <div />}
+              {activeStep === 1 && <StepTwo error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
               {activeStep === 2 && <div />}
               {activeStep === 3 && <div />}
           <div>
