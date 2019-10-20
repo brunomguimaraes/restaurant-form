@@ -1,9 +1,13 @@
 import React from 'react';
+
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
+import { FormHelperText } from '@material-ui/core';
+
+import { IReserve, IError } from '../../Main';
+
 import { NumberInput } from '../../../components/NumberInput';
 import { Select } from '../../../components/Select';
-import { IReserve } from '../../Main';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     selectLabel: {
       marginTop: theme.spacing(4),
       color: 'gray',
-      fontSize: '1rem'
+      fontSize: '0.8rem'
     }
   }),
 );
@@ -33,15 +37,16 @@ const mealTypes: Meal[] = ['breakfast' , 'lunch' , 'dinner'];
 
 interface IProps {
   changeReserveHandler: (field: any, value: any) => void;
-  reserveValues: IReserve
+  reserveValues: IReserve;
+  error: IError;
 }
 
-const StepOneComp = ({ changeReserveHandler, reserveValues }: IProps) => {
+const StepOneComp = ({ changeReserveHandler, reserveValues, error }: IProps) => {
   const classes = useStyles();
-
+  
   return (
     <div className={classes.stepOneContainer}>
-      <FormControl className={classes.formControl}>
+      <FormControl error={error.mealType ? true : false} className={classes.formControl}>
         <label className={classes.selectLabel}>Please select a meal: </label>
           <Select
             value={reserveValues.mealType}
@@ -49,8 +54,15 @@ const StepOneComp = ({ changeReserveHandler, reserveValues }: IProps) => {
             options={mealTypes}
             changeReserveHandler={changeReserveHandler}
           />
-        <label className={classes.selectLabel}>Please enter number of people: </label>
-          <NumberInput />
+          {error.mealType && <FormHelperText>{error.mealType}</FormHelperText>}
+        <label className={classes.selectLabel}>Please enter the number of people(up to 10):  </label>
+          <NumberInput
+            error={error.quantityOfPeople ? true : false}
+            value={reserveValues.quantityOfPeople}
+            stateRef={'quantityOfPeople'}
+            changeReserveHandler={changeReserveHandler}
+          />
+          {error.quantityOfPeople && <FormHelperText>{error.quantityOfPeople}</FormHelperText>}
       </FormControl>
     </div>
   );

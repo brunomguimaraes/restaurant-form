@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import { StepOne, Meal } from '../Form/StepOne';
 // import { StepTwo } from '../Form/StepTwo';
 
+import validate from '../../utils/validation'
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '90%',
@@ -39,25 +41,44 @@ export interface IDishes {
   quantity: number;
 }
 
-const emptyReserve: IReserve ={
+export interface IError {
+  mealType: string;
+  quantityOfPeople: string;
+}
+
+const emptyReserve: IReserve = {
   mealType: '',
   quantityOfPeople: 0,
   restaurant: [],
   dishes: []
 }
 
+const emptyError = {
+  mealType: '',
+  quantityOfPeople: ''
+}
+
 const MainComp = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const [reserve, setReserve] = React.useState<IReserve>(emptyReserve)
+  const [reserve, setReserve] = React.useState(emptyReserve);
+  const [error, setError] = React.useState(emptyError);
+
   const steps = getSteps();
 
   React.useEffect(() => {console.log("reserve:", reserve)}, [reserve])
   
-  const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+  const handleValidation = () => {
+      setError(validate(reserve))
+      if(Object.entries(validate(reserve)).length === 0 &&
+       validate(reserve).constructor === Object) {
+        handleNext();
+      }
   };
 
+  const handleNext = () => {
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
+  }
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
@@ -67,12 +88,10 @@ const MainComp = () => {
   };
 
  const handleReserveChange = (field: any, value: any) => {
-    // return (e: any) => {
       setReserve({
         ...reserve,
         [field]: value
       });
-    // };
   }
 
   return (
@@ -92,7 +111,7 @@ const MainComp = () => {
           </div>
         ) : (
           <div>
-              {activeStep === 0 && <StepOne reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
+              {activeStep === 0 && <StepOne error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
               {/* {activeStep === 1 && <StepTwo />} */}
               {activeStep === 1 && <div />}
               {activeStep === 2 && <div />}
@@ -105,7 +124,7 @@ const MainComp = () => {
               >
                 Back
               </Button>
-              <Button variant="contained" color="primary" onClick={handleNext}>
+              <Button variant="contained" color="primary" onClick={handleValidation}>
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
             </div>

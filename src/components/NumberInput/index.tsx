@@ -22,33 +22,28 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface State {
-  name: string;
-  age: string;
-  multiline: string;
-  currency: string;
+interface IProps {
+  error: boolean;
+  changeReserveHandler: (field: any, value: any) => void;
+  stateRef: string;
+  value: any;
 }
 
-const NumberInputComp = () => {
+const NumberInputComp = ({ error, changeReserveHandler, stateRef, value }: IProps) => {
   const classes = useStyles();
-  const [values, setValues] = React.useState<State>({
-    name: 'Cat in the Hat',
-    age: '',
-    multiline: 'Controlled',
-    currency: 'EUR',
-  });
-
-  const handleChange = (name: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [name]: event.target.value });
+  const handleChange = (name: string) => (
+    event: React.ChangeEvent<{ value: unknown }>,) => {
+			changeReserveHandler(name, event.target.value)
   };
 
   return (
     <form className={classes.container} noValidate autoComplete="off">
       <TextField
+        error={error}
         id="standard-number"
         label="Number"
-        value={values.age}
-        onChange={handleChange('age')}
+        value={value}
+        onChange={handleChange(stateRef)}
         type="number"
         className={classes.textField}
         InputLabelProps={{
