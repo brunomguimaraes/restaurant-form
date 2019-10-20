@@ -4,14 +4,9 @@ import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
     textField: {
-      marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
-      width: 200,
+      width: 50,
     },
     dense: {
       marginTop: 19,
@@ -37,11 +32,9 @@ const NumberInputComp = ({ error, changeReserveHandler, stateRef, value }: IProp
   };
 
   return (
-    <form className={classes.container} noValidate autoComplete="off">
       <TextField
         error={error}
         id="standard-number"
-        label="Number"
         value={value}
         onChange={handleChange(stateRef)}
         type="number"
@@ -51,7 +44,6 @@ const NumberInputComp = ({ error, changeReserveHandler, stateRef, value }: IProp
         }}
         margin="normal"
       />
-    </form>
   );
 }
 

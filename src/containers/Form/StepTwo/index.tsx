@@ -34,7 +34,7 @@ const StepTwoComp = ({reserveValues, changeReserveHandler, error}: IProps) => {
 
   return (
     <div className={classes.stepTwoContainer}>
-      <FormControl className={classes.formControl}>
+      <FormControl error={error.restaurant ? true : false} className={classes.formControl}>
         <label className={classes.selectLabel}>Please select a restaurant: </label>
           <Select
             value={reserveValues.restaurant}

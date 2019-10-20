@@ -4,17 +4,39 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 interface IProps {
     options: any[];
 		changeReserveHandler: (field: any, value: any) => void;
-		stateRef: string;
-		value: any;
+		stateRef: any;
+    value: any;
+    selectById?: boolean
 }
 
-const SelectComp = ({ options, changeReserveHandler, stateRef, value }: IProps) => {
+const SelectComp = ({ options, changeReserveHandler, stateRef, value, selectById }: IProps) => {
+
   const handleChange = (name: string) => (
     event: React.ChangeEvent<{ value: unknown }>,) => {
 			changeReserveHandler(name, event.target.value)
   };
 
+  const handleManyParamsChange = (name: string) => (
+    event: React.ChangeEvent<{ value: unknown }>,) => {
+      changeReserveHandler(name, event.target.value)
+  };
+
   return (
+    selectById ? (
+      <NativeSelect
+      value={value}
+      onChange={handleManyParamsChange(stateRef)}
+      inputProps={{
+        name: stateRef,
+      }}
+    >
+      <option value="">---</option>
+      {options.map(
+        option => <option key={option.id} value={option.id}>
+          {option.name}
+        </option>
+      )}
+    </NativeSelect> ) : (
         <NativeSelect
           value={value}
           onChange={handleChange(stateRef)}
@@ -28,7 +50,7 @@ const SelectComp = ({ options, changeReserveHandler, stateRef, value }: IProps) 
               {option}
             </option>
           )}
-        </NativeSelect>
+        </NativeSelect>)
   );
 }
 

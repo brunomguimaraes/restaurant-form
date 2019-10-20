@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { StepOne, Meal } from '../Form/StepOne';
 import { StepTwo } from '../Form/StepTwo';
+import { StepThree } from '../Form/StepThree';
 
 import validate from '../../utils/validation'
 
@@ -39,19 +40,27 @@ export interface IReserve {
 export interface IDishes {
   name: string;
   quantity: number;
+  id: number;
 }
 
 export interface IError {
   mealType?: string;
   quantityOfPeople?: string;
   restaurant?: string;
+  dishes?: string;
 }
+
+
 
 const emptyReserve: IReserve = {
   mealType: '',
-  quantityOfPeople: 0,
+  quantityOfPeople: 1,
   restaurant: '',
-  dishes: []
+  dishes: [{
+    name: '',
+    quantity: 1,
+    id: 0
+  }]
 }
 
 const emptyError = {
@@ -63,6 +72,7 @@ const MainComp = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [reserve, setReserve] = React.useState(emptyReserve);
+
   const [error, setError] = React.useState(emptyError);
 
   const steps = getSteps();
@@ -71,8 +81,8 @@ const MainComp = () => {
   
   const handleValidation = () => {
       setError(validate(reserve, activeStep))
-      if(Object.entries(validate(reserve, activeStep)).length === 0 &&
-       validate(reserve, activeStep).constructor === Object) {
+      if (Object.entries(validate(reserve, activeStep)).length === 0 &&
+      validate(reserve, activeStep).constructor === Object) {
         handleNext();
       }
   };
@@ -95,6 +105,7 @@ const MainComp = () => {
       });
   }
 
+
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep} alternativeLabel>
@@ -114,7 +125,7 @@ const MainComp = () => {
           <div>
               {activeStep === 0 && <StepOne error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
               {activeStep === 1 && <StepTwo error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
-              {activeStep === 2 && <div />}
+              {activeStep === 2 && <StepThree error={error} reserveValues={reserve} changeReserveHandler={handleReserveChange} />}
               {activeStep === 3 && <div />}
           <div>
               <Button
